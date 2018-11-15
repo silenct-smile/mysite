@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',#会话框架
     'django.contrib.messages',#消息框架
     'django.contrib.staticfiles',#管理静态文件的框架
-    'polls',
+    'polls',#但是首先得把 polls 应用安装到我们的项目里
 ]
 
 MIDDLEWARE = [
