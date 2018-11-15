@@ -16,6 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf.urls import url,include
+from django.contrib.auth.models import User
+from rest_framework import routers,serializers,viewsets
 
 """函数 include() 允许引用其它 URLconfs。每当 Django 遇到 :func：~django.urls.include 时，它会截断与此项匹配的 URL 的部分，并将剩余的字符串
 发送到 URLconf 以供进一步处理。我们设计 include() 的理念是使其可以即插即用。因为投票应用有它自己的 URLconf( polls/urls.py )，他们能够被放在 
@@ -34,8 +37,26 @@ path() 参数： kwargs
 path() 参数： name
     为你的 URL 取名能使你在 Django 的任意地方唯一地引用它，尤其是在模板中。这个有用的特性允许你只改一个文件就能全局地修改某个 URL 模式。
 """
+# Serializers define the API representation.
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url','username','email','is_staff')
+
+# ViewSets define the view behavior.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'users',UserViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/',include('polls.urls')),
     #path(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^',include(router.urls)),
+    url(r'^api-auth/',include('rest_framework.urls',namespace='rest_framework')),
+
 ]
