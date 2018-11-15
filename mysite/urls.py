@@ -1,3 +1,4 @@
+#-*-coding:utf-8 -*-
 """mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -36,4 +37,5 @@ path() 参数： name
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/',include('polls.urls')),
+    #path(r'^api-auth/', include('rest_framework.urls')),
 ]

@@ -1,3 +1,4 @@
+#-*-coding:utf-8 -*-
 """
 Django settings for mysite project.
 
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',#消息框架
     'django.contrib.staticfiles',#管理静态文件的框架
     'polls',#但是首先得把 polls 应用安装到我们的项目里
+    'blog',
+    'rest_framework',
+    'rest_framework.authtoken' # token 认证
+    #'rest_framework_docs',
+
 ]
 
 MIDDLEWARE = [
@@ -82,9 +88,14 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 #GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'youpassword' WITH GRANT OPTION;
+"""并且需要在应用的__init__.py文件添加
+import pymysql
+pymysql.install_as_MySQLdb()
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME':'mysite',
         'USER':'root',
@@ -94,7 +105,32 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
+"""
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': (
+    # 这句话能够使认证生效，否则直接请求就回返回结果
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+ # 这里是支持缓存，用户名密码，token 三个认证
+ 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+  # 使用token是必须要有下面这句话
+ 'rest_framework.authentication.TokenAuthentication',
+    ),
+    'PAGE_SIZE': 10
+}
+"""
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
