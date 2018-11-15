@@ -29,14 +29,22 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+#这些应用被默认启用是为了给常规项目提供方便，默认开启的某些应用需要至少一个数据表，所以，在使用他们之前需要在数据库中创建一些表。请执行以下
+# 命令：python manage.py migrate
+"""这个 migrate 命令检查 INSTALLED_APPS 设置，为其中的每个应用创建需要的数据表，至于具体会创建什么，这取决于你的 mysite/settings.py 设置文件
+和每个应用的数据库迁移文件（我们稍后会介绍这个）。这个命令所执行的每个迁移操作都会在终端中显示出来。如果你感兴趣的话，运行你数据库的命令行工具，
+并输入 \dt (PostgreSQL)， SHOW TABLES; (MySQL)， .schema (SQLite)或者 SELECT TABLE_NAME FROM USER_TABLES; (Oracle) 来看看 Django 到底创建
+了哪些表
+就像之前说的，为了方便大多数项目，我们默认激活了一些应用，但并不是每个人都需要它们。如果你不需要某个或某些应用，你可以在运行 migrate 前毫无顾虑
+地从 INSTALLED_APPS 里注释或者删除掉它们。 migrate 命令只会为在 INSTALLED_APPS 里声明了的应用进行数据库迁移
+"""
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.admin',#管理员站点， 你很快就会使用它
+    'django.contrib.auth',#认证授权系统
+    'django.contrib.contenttypes',#内容类型框架
+    'django.contrib.sessions',#会话框架
+    'django.contrib.messages',#消息框架
+    'django.contrib.staticfiles',#管理静态文件的框架
     'polls',
 ]
 
@@ -73,11 +81,16 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
+#GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'youpassword' WITH GRANT OPTION;
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME':'mysite',
+        'USER':'root',
+        'PASSWORD':'123456',
+        'HOST':'39.106.144.229',
+        'PORT':'3306',
     }
 }
 
@@ -106,14 +119,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 USE_I18N = True
-
 USE_L10N = True
-
-USE_TZ = True
-
+#USE_TZ = True
+USE_TZ = False
+"""在Django的配置文件settings.py中，有两个配置参数是跟时间与时区有关的，分别是TIME_ZONE和USE_TZ
+如果USE_TZ设置为True时，Django会使用系统默认设置的时区，即America/Chicago，此时的TIME_ZONE不管有没有设置都不起作用。
+如果USE_TZ 设置为False，而TIME_ZONE设置为None，则Django还是会使用默认的America/Chicago时间。若TIME_ZONE设置为其它时区的话，则还要分情况，
+如果是Windows系统，则TIME_ZONE设置是没用的，Django会使用本机的时间。如果为其他系统，则使用该时区的时间，入设置USE_TZ = False, 
+TIME_ZONE = 'Asia/Shanghai', 则使用上海的UTC时间"""
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
